@@ -29,14 +29,14 @@ import org.spongepowered.api.GameState;
 
 /**
  * A registry of {@link DataManipulator}s and their respective
- * {@link DataManipulatorBuilder}s. Registration should occur prior to
+ * {@link DataUtil}s. Registration should occur prior to
  * {@link GameState#SERVER_ABOUT_TO_START}.
  */
 public interface DataManipulatorRegistry {
 
     /**
      * Registers the given {@link DataManipulator} class with it's associated
-     * {@link DataManipulatorBuilder}. The builder can be used to create new
+     * {@link DataUtil}. The builder can be used to create new
      * instances of the given {@link DataManipulator} for data retrieval,
      * data representation, and mass application of a {@link DataManipulator}
      * to multiple {@link DataHolder}s.
@@ -45,7 +45,7 @@ public interface DataManipulatorRegistry {
      * @param builder The builder instance of the data manipulator
      * @param <T> The type of data manipulator
      */
-    <T extends DataManipulator<T>> void register(Class<T> manipulatorClass, DataManipulatorBuilder<T> builder);
+    <T extends DataManipulator<T>> void register(Class<T> manipulatorClass, DataUtil<T> builder);
 
     /**
      * Attempts to retrieve the builder for the given {@link DataManipulator}.
@@ -57,6 +57,6 @@ public interface DataManipulatorRegistry {
      * @param <T> The type of manipulator
      * @return The builder, if available
      */
-    <T extends DataManipulator<T>> Optional<DataManipulatorBuilder<T>> getBuilder(Class<T> manipulatorClass);
+    <T extends DataManipulator<T>> Optional<DataUtil<T>> getBuilder(Class<T> manipulatorClass);
 
 }

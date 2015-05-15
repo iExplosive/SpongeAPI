@@ -25,20 +25,21 @@
 package org.spongepowered.api.data;
 
 import com.google.common.base.Optional;
+import org.spongepowered.api.service.persistence.DataBuilder;
 
 /**
  * A builder of {@link DataManipulator}s. This builder can build
  * a specific {@link DataManipulator} that can be used to pre-construct
  * customized data prior to applying to a {@link DataHolder}.
  *
- * <p>{@link DataManipulatorBuilder}s must be registered with the
+ * <p>{@link DataUtil}s must be registered with the
  * {@link DataManipulatorRegistry} before they can be used by the game
  * and plugins. Failure to do so may prevent the {@link DataManipulator} from
  * being used.</p>
  *
  * @param <T> The type of {@link DataManipulator}
  */
-public interface DataManipulatorBuilder<T extends DataManipulator<T>> {
+public interface DataUtil<T extends DataManipulator<T>> extends DataBuilder<T> {
 
     /**
      * Creates a new specific {@link DataManipulator} for consumption. There
@@ -49,6 +50,23 @@ public interface DataManipulatorBuilder<T extends DataManipulator<T>> {
      * @return The newly created data manipulator
      */
     T create();
+
+    /**
+     * Attempts to retrieve the specific {@link DataManipulator} from the given
+     * {@link DataHolder}. This can be used for customized implementation where
+     * the {@link DataHolder} does not natively support custom data such that
+     * retrieval and storage of custom data between reloads require an external
+     * storage medium.
+     *
+     * <p>This is provided only as a replacement of
+     * {@link DataHolder#getData(Class)} in the event where no checks are
+     * performed whether the {@link DataHolder} has the pertaining data, only
+     * to retrieve the {@link DataManipulator} if found.</p>
+     *
+     * @param holder The data holder to retrieve the data from
+     * @return The data, if available
+     */
+    Optional<T> getFrom(DataHolder holder);
 
     /**
      * Attempts to read data from the given {@link DataHolder} and constructs
@@ -66,5 +84,37 @@ public interface DataManipulatorBuilder<T extends DataManipulator<T>> {
      *     filled from the given {@link DataHolder}, if available
      */
     Optional<T> createFrom(DataHolder dataHolder);
+
+    /**
+     * Attempts to fill the given {@link DataManipulator} with the given
+     * {@link DataPriority} in the event there already exists some data for the
+     * given {@link DataHolder}. If the {@link DataHolder} does not have any
+     * pre-existing data, the {@link DataManipulator} may be left unchanged.
+     *
+     * <p>If the {@link DataManipulator} is simply unsupported,
+     * {@link Optional#absent()} may be returned.</p>
+     *
+     * @param holder The data holder
+     * @param manipulator The manipulator to populate
+     * @param priority The priority of data to merge
+     * @return The manipulator, if it was compatible
+     */
+    Optional<T> fillData(DataHolder holder, T manipulator, DataPriority priority);
+
+    /**
+     *
+     * @param dataHolder
+     * @param manipulator
+     * @param priority
+     * @return
+     */
+    DataTransactionResult setData(DataHolder dataHolder, T manipulator, DataPriority priority);
+
+    /**
+     *
+     * @param dataHolder
+     * @return
+     */
+    boolean remove(DataHolder dataHolder);
 
 }
