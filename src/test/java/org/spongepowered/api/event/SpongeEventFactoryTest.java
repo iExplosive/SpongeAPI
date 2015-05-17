@@ -27,20 +27,33 @@ package org.spongepowered.api.event;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.data.DataManipulator;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.event.factory.EventFactory;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpongeEventFactoryTest {
 
     @Test
     public void testCreate() throws InvocationTargetException, IllegalAccessException {
+
+        Object event;
+        List<Method> badMethods = new ArrayList<Method>();
         for (Method method : SpongeEventFactory.class.getMethods()) {
-            if (method.getName().startsWith("createState")) {
+            if (method.getName().startsWith("createState") || method.getName().equals("createEvent")) {
                 continue; // TODO minecrell needs to make this possible.
             }
             if (method.getName().startsWith("create") && Modifier.isStatic(method.getModifiers())) {
@@ -51,7 +64,43 @@ public class SpongeEventFactoryTest {
                         params[i] = mockParam(paramTypes[i]);
                     }
 
-                    method.invoke(null, params);
+                    event = method.invoke(null, params);
+                    Method eventMethod2 = null;
+                    for (Method eventMethod : event.getClass().getMethods()) {
+                        try {
+                            eventMethod2 = eventMethod;
+                            paramTypes = eventMethod.getParameterTypes();
+                            params = new Object[paramTypes.length];
+                            for (int i = 0; i < paramTypes.length; i++) {
+                                params[i] = mockParam(paramTypes[i]);
+                            }
+
+                            if (eventMethod.getReturnType() != void.class) {
+                                assertNotNull("The return type of " + eventMethod + " was null!", eventMethod.invoke(event, params));
+                            }
+
+                        } catch (Exception e) {
+                            throw new RuntimeException(
+                                    "Invocation of the method '" + eventMethod2 + "' failed\n\n"
+                                    + "(To avoid the need to create numerous boilerplate concrete classes for Sponge's many event "
+                                    + "interfaces, the " + SpongeEventFactory.class.getSimpleName()
+                                    + " class dynamically creates concrete classes at "
+                                    + "runtime. However, as this means that errors may only become known at runtime, this test ensures that problems "
+                                    + "are caught during development.)\n\n"
+                                    + "The failure of this test is in regards to invocation of a method of the '" + method.getReturnType().getName()
+                                    + "' event.\n\n"
+                                    + "Reasons for failure include:\n"
+                                    + "(1) The called method does not conform to format that the class generator expects for getters or setters,"
+                                    + "and is not implemented by the abstract class used as the superclass of the generated event."
+                                    + "See the wrapped exception for more details.\n"
+                                    + "\tSolution: Modify the method name and/or signature to follow the expected getter/sett er semantics,"
+                                    + "or annotate the event with @ImplementedBy to indicate the abstract class used as the superclass."
+                                    + "(2) A bug in the class generator was found\n"
+                                    + "\tSolution: Look into " + EventFactory.class.getName() + " and its implementations.\n",
+                            e);
+                        }
+                    }
+
                 } catch (Exception e) {
                     throw new RuntimeException(
                             "Runtime creation of the '" + method.getReturnType().getName() + "' event failed\n\n"
@@ -80,7 +129,7 @@ public class SpongeEventFactoryTest {
         }
     }
 
-    private Object mockParam(Class<?> paramType) {
+    private Object mockParam(final Class<?> paramType) {
         if (paramType == byte.class) {
             return (byte) 0;
         } else if (paramType == short.class) {
@@ -103,6 +152,32 @@ public class SpongeEventFactoryTest {
             return paramType.getEnumConstants()[0];
         } else if (Location.class.isAssignableFrom(paramType)) {
             return new Location(mock(Extent.class), 0, 0, 0);
+        } else if (paramType == Text[].class) {
+            return new Text[] {};
+        } else if (BlockSnapshot.class.isAssignableFrom(paramType)) {
+            BlockSnapshot mock = (BlockSnapshot) mock(paramType);
+
+            final Answer answer = new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return mock(paramType);
+                }
+            };
+
+            when(mock.copy()).thenAnswer(answer);
+            return mock;
+        } else if (DataManipulator.class.isAssignableFrom(paramType)) {
+            DataManipulator mock = (DataManipulator) mock(paramType);
+
+            final Answer answer = new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return mock(paramType);
+                }
+            };
+            when(mock.copy()).thenAnswer(answer);
+
+            return mock;
         } else {
             return mock(paramType);
         }

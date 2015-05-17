@@ -24,17 +24,18 @@
  */
 package org.spongepowered.api.entity.player;
 
-import org.spongepowered.api.data.manipulators.DisplayNameData;
-import org.spongepowered.api.data.manipulators.entities.GameModeData;
-import org.spongepowered.api.data.manipulators.entities.JoinData;
+import org.spongepowered.api.data.manipulator.DisplayNameData;
+import org.spongepowered.api.data.manipulator.entity.GameModeData;
+import org.spongepowered.api.data.manipulator.entity.JoinData;
 import org.spongepowered.api.effect.Viewer;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.player.tab.TabList;
-import org.spongepowered.api.net.PlayerConnection;
+import org.spongepowered.api.network.PlayerConnection;
 import org.spongepowered.api.resourcepack.ResourcePack;
 import org.spongepowered.api.scoreboard.Scoreboard;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.command.source.LocatedSource;
+import org.spongepowered.api.util.command.source.RemoteSource;
 
 import java.util.Date;
 import java.util.Locale;
@@ -47,7 +48,7 @@ import java.util.Locale;
  * <p>Any methods called on Player that are not on User do not store any data
  * that persists across server restarts.</p>
  */
-public interface Player extends Human, User, LocatedSource, Viewer {
+public interface Player extends Human, User, LocatedSource, RemoteSource, Viewer {
 
     /**
      * Gets the locale used by the player.
@@ -62,6 +63,7 @@ public interface Player extends Human, User, LocatedSource, Viewer {
      *
      * @return The connection
      */
+    @Override
     PlayerConnection getConnection();
 
     /**
@@ -79,7 +81,8 @@ public interface Player extends Human, User, LocatedSource, Viewer {
     TabList getTabList();
 
     /**
-     * Kicks the player.
+     * Kicks the player, showing the default kick reason (the translation key
+     * {@code disconnect.disconnected}).
      */
     void kick();
 
@@ -88,7 +91,7 @@ public interface Player extends Human, User, LocatedSource, Viewer {
      *
      * @param reason The reason for the kick
      */
-    void kick(Text.Literal reason);
+    void kick(Text reason);
 
     /**
      * Gets the {@link Scoreboard} displayed to the player.

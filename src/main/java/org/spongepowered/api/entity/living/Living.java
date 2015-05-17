@@ -25,7 +25,7 @@
 package org.spongepowered.api.entity.living;
 
 import org.spongepowered.api.data.DataObject;
-import org.spongepowered.api.data.manipulators.entities.HealthData;
+import org.spongepowered.api.data.manipulator.entity.HealthData;
 import org.spongepowered.api.data.marker.DamageableData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.potion.PotionEffect;

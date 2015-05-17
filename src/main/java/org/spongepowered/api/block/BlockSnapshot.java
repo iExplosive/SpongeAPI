@@ -26,11 +26,13 @@ package org.spongepowered.api.block;
 
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.data.DataSerializable;
+import org.spongepowered.api.util.annotation.TransformWith;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
 /**
- * A mutable complete representation of a block type and its associated data.
+ * A mutable complete representation of a block type and its associated data. Any changes made to the snapshot do not
+ * reflect back on the block type and data that this snapshot came from.
  *
  * <p>A block snapshot contains block type, block properties (state), as
  * well as extra block data.</p>
@@ -69,5 +71,12 @@ public interface BlockSnapshot extends DataSerializable {
      * @param location The vector location to set
      */
     void setLocation(Vector3i location);
+
+    /**
+     * Copies the snapshot.
+     * @return The copied snapshot
+     */
+    @TransformWith
+    BlockSnapshot copy();
 
 }

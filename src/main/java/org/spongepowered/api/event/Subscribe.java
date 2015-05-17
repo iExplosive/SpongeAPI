@@ -32,8 +32,8 @@ import org.spongepowered.api.service.event.EventManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Retention(value = RUNTIME)
-@Target(value = METHOD)
+@Retention(RUNTIME)
+@Target(METHOD)
 public @interface Subscribe {
 
     /**
@@ -45,8 +45,8 @@ public @interface Subscribe {
     Order order() default Order.DEFAULT;
 
     /**
-     * Whether this handler should execute even if the event has been cancelled
-     * by another handler.
+     * Whether this handler should ignore cancelled events. If enabled the
+     * handler will not be called for any cancelled events.
      *
      * @return If the handler should ignore cancelled events
      */

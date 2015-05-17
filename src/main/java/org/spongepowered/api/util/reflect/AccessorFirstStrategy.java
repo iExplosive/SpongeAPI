@@ -26,6 +26,7 @@ package org.spongepowered.api.util.reflect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -34,6 +35,7 @@ import com.google.common.collect.Multimap;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -66,7 +68,7 @@ public class AccessorFirstStrategy implements PropertySearchStrategy {
 
         for (Method method : candidates) {
             // TODO: Handle supertypes
-            if (method.getParameterTypes()[0] == expectedType) {
+            if (method.getParameterTypes()[0] == expectedType || expectedType == Optional.class) {
                 return method;
             }
         }
@@ -139,9 +141,10 @@ public class AccessorFirstStrategy implements PropertySearchStrategy {
     public ImmutableSet<? extends Property> findProperties(final Class<?> type) {
         checkNotNull(type, "type");
 
-        final Map<String, Method> accessors = Maps.newHashMap();
+        final Multimap<String, Method> accessors = HashMultimap.create();
         final Multimap<String, Method> mutators = HashMultimap.create();
         final Queue<Class<?>> queue = new NonNullUniqueQueue<Class<?>>();
+        final Map<String, Method> accessorHierarchyBottoms = new HashMap<String, Method>();
 
         queue.add(type); // Start off with our target type
 
@@ -150,8 +153,12 @@ public class AccessorFirstStrategy implements PropertySearchStrategy {
             for (Method method : scannedType.getMethods()) {
                 String name;
 
-                if ((name = getAccessorName(method)) != null) {
+                Method leastSpecificMethod;
+                if ((name = getAccessorName(method)) != null && ((leastSpecificMethod = accessorHierarchyBottoms.get(name)) == null || leastSpecificMethod.getReturnType() != method.getReturnType())) {
                     accessors.put(name, method);
+                    if (accessorHierarchyBottoms.get(name) == null || method.getReturnType().isAssignableFrom(accessorHierarchyBottoms.get(name).getReturnType())) {
+                        accessorHierarchyBottoms.put(name, method);
+                    }
                 } else if ((name = getMutatorName(method)) != null) {
                     mutators.put(name, method);
                 }
@@ -160,16 +167,15 @@ public class AccessorFirstStrategy implements PropertySearchStrategy {
             for (Class<?> implInterfaces : scannedType.getInterfaces()) {
                 queue.offer(implInterfaces);
             }
-
             queue.offer(scannedType.getSuperclass());
         }
 
         final ImmutableSet.Builder<Property> result = ImmutableSet.builder();
 
-        for (Map.Entry<String, Method> entry : accessors.entrySet()) {
+        for (Map.Entry<String, Method> entry : accessors.entries()) {
             Method accessor = entry.getValue();
             @Nullable Method mutator = findMutator(entry.getValue(), mutators.get(entry.getKey()));
-            result.add(new Property(entry.getKey(), accessor.getReturnType(), accessor, mutator));
+            result.add(new Property(entry.getKey(), accessor.getReturnType(), accessorHierarchyBottoms.get(entry.getKey()), accessor, mutator));
         }
 
         return result.build();

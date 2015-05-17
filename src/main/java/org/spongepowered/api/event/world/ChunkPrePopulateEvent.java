@@ -27,26 +27,18 @@ package org.spongepowered.api.event.world;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.gen.Populator;
 
+import java.util.List;
+
 /**
  * Called when a {@link Chunk} is about to be populated.
  */
 public interface ChunkPrePopulateEvent extends ChunkEvent {
 
     /**
-     * Returns an iterator over all pending populators.
+     * Returns a mutable list of all pending populators.
      *
      * @return The populators
      */
-    Iterable<Populator> getPendingPopulators();
-
-    /**
-     * Adds a new populator to the list of pending populators at the given
-     * index. If the index is greater than the number of populators then the
-     * new populator is simply added to the end of the list.
-     *
-     * @param populator The new populator
-     * @param index The index to add the populator at
-     */
-    void insertPopulator(Populator populator, int index);
+    List<Populator> getPendingPopulators();
 
 }

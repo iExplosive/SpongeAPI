@@ -40,6 +40,7 @@ public final class Property {
 
     private final String name;
     private final Class<?> type;
+    private final Method leastSpecificMethod;
     private final Method accessor;
     private final Optional<Method> mutator;
 
@@ -51,12 +52,14 @@ public final class Property {
      * @param accessor The accessor
      * @param mutator The mutator
      */
-    public Property(String name, Class<?> type, Method accessor, @Nullable Method mutator) {
+    public Property(String name, Class<?> type, Method leastSpecificMethod, Method accessor, @Nullable Method mutator) {
         checkNotNull(name, "name");
         checkNotNull(type, "type");
+        checkNotNull(leastSpecificMethod, "leastSpecificMethod");
         checkNotNull(accessor, "accessor");
         this.name = name;
         this.type = type;
+        this.leastSpecificMethod = leastSpecificMethod;
         this.accessor = accessor;
         this.mutator = Optional.fromNullable(mutator);
     }
@@ -77,6 +80,26 @@ public final class Property {
      */
     public Class<?> getType() {
         return this.type;
+    }
+
+    /**
+     * Gets the least specific version of the accessor used.
+     *
+     * @return The least specific accessor
+     */
+    public Method getLeastSpecificMethod() {
+        return this.leastSpecificMethod;
+    }
+
+    /**
+     * Gets the least specific version of the type used
+     *
+     * <p>This is used for the type of the generated field used to hold the value.</p>
+     *
+     * @return The type
+     */
+    public Class<?> getLeastSpecificType() {
+        return this.leastSpecificMethod.getReturnType();
     }
 
     /**
@@ -115,6 +138,16 @@ public final class Property {
      */
     public boolean hasNonnull() {
         return getAccessor().getAnnotation(Nonnull.class) != null;
+    }
+
+    /**
+     * Tests whether this property's type is the least specific version used in the
+     * interface hierarchy.
+     *
+     * @return True if tis property's type is the least specific
+     */
+    public boolean isLeastSpecificType() {
+        return this.type == this.leastSpecificMethod.getReturnType();
     }
 
 }

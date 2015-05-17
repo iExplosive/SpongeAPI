@@ -25,6 +25,7 @@
 package org.spongepowered.api.world.extent;
 
 import com.flowpowered.math.vector.Vector2i;
+import org.spongepowered.api.util.PositionOutOfBoundsException;
 import org.spongepowered.api.world.biome.BiomeType;
 
 /**
@@ -62,10 +63,33 @@ public interface BiomeArea {
     Vector2i getBiomeSize();
 
     /**
+     * Returns true if the biome area contains a biome at the specified
+     * position. This is defined as <code>{{@link #getBiomeMin()} <=
+     * position <= {@link #getBiomeMax()}</code>
+     *
+     * @param position The position to check
+     * @return Whether or not the position has a biome in this area
+     */
+    boolean containsBiome(Vector2i position);
+
+    /**
+     * Returns true if the biome area contains a biome at the specified
+     * position. This is defined as <code>{{@link #getBiomeMin()} <=
+     * (x, z) <= {@link #getBiomeMax()}</code>
+     *
+     * @param x The X coordinate to check
+     * @param z The Z coordinate to check
+     * @return Whether or not the position has a biome in this area
+     */
+    boolean containsBiome(int x, int z);
+
+    /**
      * Get an object representing the biome at the given position.
      *
      * @param position The position
      * @return The biome
+     * @throws PositionOutOfBoundsException If the position is outside of the
+     *     bounds of the area
      */
     BiomeType getBiome(Vector2i position);
 
@@ -75,6 +99,8 @@ public interface BiomeArea {
      * @param x The X position
      * @param z The Z position
      * @return The biome
+     * @throws PositionOutOfBoundsException If the position is outside of the
+     *     bounds of the area
      */
     BiomeType getBiome(int x, int z);
 
@@ -83,6 +109,8 @@ public interface BiomeArea {
      *
      * @param position The position
      * @param biome The biome
+     * @throws PositionOutOfBoundsException If the position is outside of the
+     *     bounds of the area
      */
     void setBiome(Vector2i position, BiomeType biome);
 
@@ -92,6 +120,8 @@ public interface BiomeArea {
      * @param x The X position
      * @param z The Z position
      * @param biome The biome
+     * @throws PositionOutOfBoundsException If the position is outside of the
+     *     bounds of the area
      */
     void setBiome(int x, int z, BiomeType biome);
 }

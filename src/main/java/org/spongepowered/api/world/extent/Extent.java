@@ -38,6 +38,7 @@ import org.spongepowered.api.data.Property;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.persistence.InvalidDataException;
 import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.util.PositionOutOfBoundsException;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.weather.WeatherUniverse;
 
@@ -47,14 +48,6 @@ import java.util.Collection;
  * Contains blocks, tile entities, entities, and possibly other game objects.
  */
 public interface Extent extends EntityUniverse, TileEntityVolume, WeatherUniverse, BiomeArea {
-
-    /**
-     * Gets if this Extent contains the given {@link Location}.
-     *
-     * @param location The location to test
-     * @return If the extent contains the location
-     */
-    boolean contains(Location location);
 
     /**
      * Get a representation of the block at the given position.
@@ -82,6 +75,8 @@ public interface Extent extends EntityUniverse, TileEntityVolume, WeatherUnivers
      *
      * @param position The position of the block
      * @return The type of block
+     * @throws PositionOutOfBoundsException If the position is outside of the
+     *     bounds of the block volume
      */
     BlockType getBlockType(Vector3i position);
 
@@ -95,6 +90,8 @@ public interface Extent extends EntityUniverse, TileEntityVolume, WeatherUnivers
      * @param y The Y position
      * @param z The Z position
      * @return The type of block
+     * @throws PositionOutOfBoundsException If the position is outside of the
+     *     bounds of the block volume
      */
     BlockType getBlockType(int x, int y, int z);
 

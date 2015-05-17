@@ -30,11 +30,4 @@ import org.spongepowered.api.event.Cancellable;
  * An event when an Rcon source logs in to the server.
  */
 public interface RconLoginEvent extends RconEvent, Cancellable {
-
-    /**
-     * Gets the password provided by the client.
-     *
-     * @return The password provided by the client
-     */
-    String getPassword();
 }

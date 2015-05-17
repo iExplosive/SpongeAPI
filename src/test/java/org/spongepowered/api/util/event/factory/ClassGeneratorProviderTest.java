@@ -28,16 +28,27 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.closeTo;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.scoreboard.objective.Objective;
+import org.spongepowered.api.util.annotation.TransformResult;
+import org.spongepowered.api.util.annotation.TransformWith;
+
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class ClassGeneratorProviderTest {
 
@@ -45,6 +56,19 @@ public class ClassGeneratorProviderTest {
 
     private ClassGeneratorProvider createProvider() {
         return new ClassGeneratorProvider("org.spongepowered.test");
+    }
+
+    @Test
+    public void testCreate_ModifierMethodInterface() throws Exception {
+        ClassGeneratorProvider provider = createProvider();
+        EventFactory<ModifiedMethodInterface> factory = provider.create(ModifiedMethodInterface.class, Object.class);
+
+        Map<String, Object> values = Maps.newHashMap();
+
+        ModifiedMethodInterface result = factory.apply(values);
+
+        assertNotSame(result.getNewModifierClass(), result);
+        assertNotSame(result.getOtherModifierClass(), result);
     }
 
     @Test
@@ -313,6 +337,34 @@ public class ClassGeneratorProviderTest {
         factory.apply(values);
     }
 
+    @Test
+    public void testCreate_OptionalGetter() {
+        Map<String, Object> values = Maps.newHashMap();
+        values.put("name", Optional.fromNullable("MyName"));
+
+        ClassGeneratorProvider provider = createProvider();
+        EventFactory<OptionalGetter> factory = provider.create(OptionalGetter.class, Object.class);
+        OptionalGetter getter = factory.apply(values);
+
+        assertThat(getter.getName().isPresent(), is(true));
+        assertThat(getter.getName().get(), is(Matchers.equalTo("MyName")));
+
+        getter.setName(null);
+        assertThat(getter.getName().isPresent(), is(false));
+
+        getter.setName("Aaron");
+
+        assertThat(getter.getName().isPresent(), is(true));
+        assertThat(getter.getName().get(), is(Matchers.equalTo("Aaron")));
+    }
+
+    public interface OptionalGetter {
+
+        Optional<String> getName();
+
+        void setName(@Nullable String name);
+    }
+
     public interface PrimitiveContainer {
 
         byte getByte();
@@ -506,6 +558,29 @@ public class ClassGeneratorProviderTest {
 
         public boolean isCool() {
             return true;
+        }
+    }
+
+    public interface ModifiedMethodInterface {
+
+        @TransformResult
+        ModifierClass getNewModifierClass();
+
+        @TransformResult("foo")
+        ModifierClass getOtherModifierClass();
+
+    }
+
+    public class ModifierClass {
+
+        @TransformWith
+        public ModifierClass copy() {
+            return new ModifierClass();
+        }
+
+        @TransformWith("foo")
+        public ModifierClass copy2() {
+            return new ModifierClass();
         }
     }
 

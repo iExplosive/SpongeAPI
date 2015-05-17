@@ -29,7 +29,7 @@ import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.DataObject;
 import org.spongepowered.api.data.DataSerializable;
-import org.spongepowered.api.data.manipulators.entities.StatisticData;
+import org.spongepowered.api.data.manipulator.entity.StatisticData;
 import org.spongepowered.api.data.marker.AchievementData;
 import org.spongepowered.api.data.marker.BanData;
 import org.spongepowered.api.entity.ArmorEquipable;
