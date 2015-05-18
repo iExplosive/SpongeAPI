@@ -25,57 +25,94 @@
 package org.spongepowered.api.util.blockray;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.UnmodifiableIterator;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.util.Collect;
 import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.extent.Extent;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class BlockRay {
 
-    private final Vector3d startLocation;
+    private final Location startLocation;
     private final Vector3d startDirection;
-    private final Extent extent;
     private final BlockRayFilter filter;
 
-    public BlockRay(Vector3d startLocation, Vector3d startDirection, Extent extent, BlockRayFilter filter) {
+    private boolean hasFinished = false;
+    private Location endLocation;
+
+    private List<Location> computedIntersecting = new ArrayList<Location>();
+
+    private Iterator<Location> intersecting = new UnmodifiableIterator<Location>() {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public Location next() {
+            return null;
+        }
+    };
+
+    private List<Location> computedDiscrete = new ArrayList<Location>();
+
+    private Iterator<Location> discrete = new UnmodifiableIterator<Location>() {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public Location next() {
+            return null;
+        }
+    };
+
+    public BlockRay(Location startLocation, Vector3d startDirection, BlockRayFilter filter) {
         this.startLocation = startLocation;
         this.startDirection = startDirection;
-        this.extent = extent;
         this.filter = filter;
     }
 
-    // traces this ray fully
-    public static BlockRay trace() {
+    // traces this ray for one step
+    private void trace() {
+
+    }
+
+    private void traceUntilIntersecting() {
+
+    }
+
+    private void traceUntilDiscrete() {
+
+    }
+
+    public Location getStartLocation() {
+        return startLocation;
+    }
+
+    public Location getEndLocation() {
         return null;
     }
 
-    public static Location getEndingLocation() {
-        return null;
+    public Iterable<Location> getIntersecting() {
+        return Iterables.concat(computedIntersecting, Collect.iterableFromIterator(intersecting));
     }
 
-    public static Iterable<Location> getIntersectingBlocks() {
-        return null;
+    public Iterable<Location> getDiscrete() {
+        return Iterables.concat(computedIntersecting, Collect.iterableFromIterator(discrete));
     }
 
-    public static Iterable<Location> asDiscretePath() {
-        return null;
+    public static BlockRay fromEntityRotation(Entity entity, BlockRayFilter filter) {
+        return new BlockRay(entity.getLocation(), entity.getRotation(), filter);
     }
 
-    public static BlockRay fromEntityLooking(Entity entity, BlockRayFilter filter) {
-        return new BlockRay(
-                entity.getLocation().getPosition(),
-                entity.getRotation(),
-                entity.getLocation().getExtent(),
-                filter
-        );
-    }
-
-    public static BlockRay fromEntityLooking(Entity entity) {
-        return new BlockRay(
-                entity.getLocation().getPosition(),
-                entity.getRotation(),
-                entity.getLocation().getExtent(),
-                BlockRayFilter.ONLY_AIR
-        );
+    public static BlockRay fromEntityRotation(Entity entity) {
+        return fromEntityRotation(entity, BlockRayFilter.ONLY_AIR);
     }
 
 }
