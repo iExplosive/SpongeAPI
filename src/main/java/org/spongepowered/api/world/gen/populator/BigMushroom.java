@@ -24,10 +24,14 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
-import com.google.common.base.Optional;
-import org.spongepowered.api.data.type.BigMushroomType;
-import org.spongepowered.api.world.biome.BiomeTypes;
+import org.spongepowered.api.util.VariableAmount;
+import org.spongepowered.api.util.weighted.WeightedCollection;
+import org.spongepowered.api.util.weighted.WeightedObject;
 import org.spongepowered.api.world.gen.Populator;
+import org.spongepowered.api.world.gen.type.MushroomType;
+import org.spongepowered.api.world.gen.type.MushroomTypes;
+
+import java.util.Collection;
 
 /**
  * Represents a populator which places a number of large mushrooms. The type of
@@ -36,59 +40,29 @@ import org.spongepowered.api.world.gen.Populator;
 public interface BigMushroom extends Populator {
 
     /**
-     * Gets the type of mushroom being placed by this populator.
-     * <strong>Note:</strong> this type will be ignored if the populator is set
-     * to randomize types {@link #usesRandomizedType()}. If the populator is set
-     * to randomize then this method will return absent.
+     * Gets a mutable {@link WeightedCollection} of possible mushroom types to
+     * spawn. If the list is empty then a {@link MushroomType} will be selected
+     * at random from all available {@link MushroomTypes}.
      * 
-     * @return The type, if not randomized
+     * @return The weighted list
      */
-    Optional<BigMushroomType> getType();
+    WeightedCollection<WeightedObject<MushroomType>> getType();
 
     /**
-     * Sets the type of mushroom to place. Setting the mushroom type will set
-     * {@link #usesRandomizedType()} to false.
-     * 
-     * @param type The new mushroom type
-     */
-    void setType(BigMushroomType type);
-
-    /**
-     * Gets whether this populator is randomizing which type it is placing. If
-     * set the mushroom type will be selected at random for each mushroom that
-     * it places.
-     * 
-     * <p>This defaults to true.</p>
-     * 
-     * @return True if this populator is using randomized mushroom types
-     */
-    boolean usesRandomizedType();
-
-    /**
-     * Sets whether this populator is randomizing which type it is placing. If
-     * set the mushroom type will be selected at random for each mushroom that
-     * it places.
-     * 
-     * @param state The new state
-     */
-    void useRandomizedTypes(boolean state);
-
-    /**
-     * Gets the number of mushrooms which will be attempted to be spawned.
+     * Gets a representation of the amount of mushrooms which will be attempted
+     * to be spawned per chunk.
      * 
      * <p><strong>Note:</strong> This number is not a definite number and the
      * final count of mushrooms which are successfully spawned by the populator
      * will almost always be lower.</p>
      * 
-     * <p>The default value for this is 1 (from
-     * {@link BiomeTypes#MUSHROOM_ISLAND}.</p>
-     * 
      * @return The number of mushrooms attempted to be spawned per chunk
      */
-    int getMushroomsPerChunk();
+    VariableAmount getMushroomsPerChunk();
 
     /**
-     * Sets the number of mushrooms which will be attempted to be spawned.
+     * Sets the representation of the amount of mushrooms which will be
+     * attempted to be spawned per chunk.
      * 
      * <p><strong>Note:</strong> This number is not a definite number and the
      * final count of mushrooms which are successfully spawned by the populator
@@ -96,7 +70,7 @@ public interface BigMushroom extends Populator {
      * 
      * @param count The new amount to attempt to create
      */
-    void setMushroomsPerChunk(int count);
+    void setMushroomsPerChunk(VariableAmount count);
 
     /**
      * A builder for constructing {@link BigMushroom} populators.
@@ -104,16 +78,22 @@ public interface BigMushroom extends Populator {
     interface Builder {
 
         /**
-         * Sets the type of mushroom to place. Setting the mushroom type will
-         * set {@link #usesRandomizedType()} to false.
+         * Sets the weighted {@link MushroomType}s to select from during
+         * generation.
          * 
-         * <p>Defaults to absent with the
-         * {@link BigMushroom#usesRandomizedType()} flag set to true.</p>
-         * 
-         * @param type The new mushroom type
+         * @param types The weighted types
          * @return This builder, for chaining
          */
-        Builder type(BigMushroomType type);
+        Builder types(WeightedObject<MushroomType>... types);
+
+        /**
+         * Sets the weighted {@link MushroomType}s to select from during
+         * generation.
+         * 
+         * @param types The weighted types
+         * @return This builder, for chaining
+         */
+        Builder types(Collection<WeightedObject<MushroomType>> types);
 
         /**
          * Sets the number of mushrooms which will be attempted to be spawned.
@@ -125,18 +105,7 @@ public interface BigMushroom extends Populator {
          * @param count The new amount to attempt to create
          * @return This builder, for chaining
          */
-        Builder mushroomsPerChunk(int count);
-
-        /**
-         * Sets whether this populator is randomizing which type it is placing.
-         * If set the mushroom type will be selected at random for each mushroom
-         * that it places.
-         * 
-         * <p>This defaults to true.</p>
-         *
-         * @return This builder, for chaining
-         */
-        Builder randomizeType();
+        Builder mushroomsPerChunk(VariableAmount count);
 
         /**
          * Resets this builder to the default values.
@@ -151,7 +120,7 @@ public interface BigMushroom extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         BigMushroom build() throws IllegalStateException;
 

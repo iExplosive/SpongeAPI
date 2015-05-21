@@ -25,7 +25,12 @@
 package org.spongepowered.api.world.gen.populator;
 
 import org.spongepowered.api.data.type.ShrubType;
+import org.spongepowered.api.util.VariableAmount;
+import org.spongepowered.api.util.weighted.WeightedCollection;
+import org.spongepowered.api.util.weighted.WeightedObject;
 import org.spongepowered.api.world.gen.Populator;
+
+import java.util.Collection;
 
 /**
  * Represents a populator which places down various variants of
@@ -34,18 +39,11 @@ import org.spongepowered.api.world.gen.Populator;
 public interface Shrub extends Populator {
 
     /**
-     * Gets the {@link ShrubType} to place.
+     * Gets a weighted collection of {@link ShrubType}s to place.
      * 
-     * @return The shrub type
+     * @return The shrub types
      */
-    ShrubType getType();
-
-    /**
-     * Sets the {@link ShrubType} to place.
-     * 
-     * @param type The new shrub type
-     */
-    void setType(ShrubType type);
+    WeightedCollection<WeightedObject<ShrubType>> getType();
 
     /**
      * Gets the number of shrubs to attempt to spawn per chunk, must be greater
@@ -53,7 +51,7 @@ public interface Shrub extends Populator {
      * 
      * @return The amount of shrubs to spawn
      */
-    int getShrubsPerChunk();
+    VariableAmount getShrubsPerChunk();
 
     /**
      * Sets the number of shrubs to attempt to spawn per chunk, must be greater
@@ -61,7 +59,7 @@ public interface Shrub extends Populator {
      * 
      * @param count The new amount of shrubs to spawn
      */
-    void setShrubsPerChunk(int count);
+    void setShrubsPerChunk(VariableAmount count);
 
     /**
      * A builder for constructing {@link Shrub} populators.
@@ -75,15 +73,23 @@ public interface Shrub extends Populator {
          * @param count The new amount of shrubs to spawn
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
+        Builder perChunk(VariableAmount count);
 
         /**
-         * Sets the {@link ShrubType} to place.
+         * Sets the weighted {@link ShrubType}s to place.
          * 
-         * @param type The new shrub type
+         * @param types The new shrub types
          * @return This builder, for chaining
          */
-        Builder type(ShrubType type);
+        Builder types(WeightedObject<ShrubType>... types);
+
+        /**
+         * Sets the weighted {@link ShrubType}s to place.
+         * 
+         * @param types The new shrub types
+         * @return This builder, for chaining
+         */
+        Builder types(Collection<WeightedObject<ShrubType>> types);
 
         /**
          * Resets this builder to the default values.
@@ -98,7 +104,7 @@ public interface Shrub extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         Shrub build() throws IllegalStateException;
 

@@ -26,7 +26,6 @@ package org.spongepowered.api.util.weighted;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Objects;
 
 /**
@@ -83,7 +82,7 @@ public class WeightedObject<T> {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof WeightedObject)) {
             return false;
         }
         WeightedObject<?> object = (WeightedObject<?>) obj;
@@ -91,5 +90,13 @@ public class WeightedObject<T> {
             return false;
         }
         return this.weight == object.weight;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 37 * result + this.object.hashCode();
+        result = 37 * result + this.weight;
+        return result;
     }
 }

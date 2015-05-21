@@ -107,7 +107,7 @@ public class WeightedEntity extends WeightedObject<EntityType> {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof WeightedEntity)) {
             return false;
         }
         WeightedEntity object = (WeightedEntity) obj;
@@ -118,6 +118,15 @@ public class WeightedEntity extends WeightedObject<EntityType> {
             return false;
         }
         return this.weight == object.weight;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 37 * result + this.additionalProperties.hashCode();
+        result = 37 * result + this.object.hashCode();
+        result = 37 * result + this.weight;
+        return result;
     }
 
 }

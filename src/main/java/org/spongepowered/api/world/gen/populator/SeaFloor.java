@@ -24,7 +24,12 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import org.spongepowered.api.block.BlockType;
+
+import java.util.Set;
+
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.world.gen.Populator;
 
 /**
@@ -53,7 +58,7 @@ public interface SeaFloor extends Populator {
      * 
      * @return The amount to spawn
      */
-    int getBlocksPerChunk();
+    VariableAmount getDiscsPerChunk();
 
     /**
      * Sets the number of discs to attempt to spawn per chunk, must be greater
@@ -61,21 +66,28 @@ public interface SeaFloor extends Populator {
      * 
      * @param count The new amount to spawn
      */
-    void setBlocksPerChunk(int count);
+    void setDiscsPerChunk(VariableAmount count);
 
     /**
      * Gets the radius of the discs being spawned.
      * 
      * @return The disc radius
      */
-    int getRadius();
+    VariableAmount getRadius();
 
     /**
      * Sets the radius of the discs being spawned.
      * 
      * @param radius The new disc radius
      */
-    void setRadius(int radius);
+    void setRadius(VariableAmount radius);
+
+    /**
+     * Gets a mutable set of valid blocks which this populator may replace.
+     * 
+     * @return The set of valid replacement blocks
+     */
+    Set<BlockType> getValidBlocksToReplace();
 
     /**
      * A builder for constructing {@link SeaFloor} populators.
@@ -91,13 +103,13 @@ public interface SeaFloor extends Populator {
         Builder block(BlockState block);
 
         /**
-         * Sets the number of discs to attempt to spawn per chunk, must be greater
-         * than zero.
+         * Sets the number of discs to attempt to spawn per chunk, must be
+         * greater than zero.
          * 
          * @param count The new amount to spawn
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
+        Builder perChunk(VariableAmount count);
 
         /**
          * Sets the radius of the discs being spawned.
@@ -105,7 +117,15 @@ public interface SeaFloor extends Populator {
          * @param radius The new disc radius
          * @return This builder, for chaining
          */
-        Builder radius(int radius);
+        Builder radius(VariableAmount radius);
+
+        /**
+         * Sets which block types may be replaced by this populator.
+         * 
+         * @param types The valid blocks to replace
+         * @return This builder, for chaining
+         */
+        Builder replace(BlockType... types);
 
         /**
          * Resets this builder to the default values.
@@ -120,7 +140,7 @@ public interface SeaFloor extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         SeaFloor build() throws IllegalStateException;
 

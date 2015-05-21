@@ -24,7 +24,9 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import com.google.common.base.Predicate;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.world.gen.Populator;
 
 /**
@@ -39,7 +41,7 @@ public interface RandomFire extends Populator {
      * 
      * @return The number to spawn
      */
-    int getFirePerChunk();
+    VariableAmount getFirePerChunk();
 
     /**
      * Sets the number of fires to attempt to spawn per chunk, must be greater
@@ -47,23 +49,25 @@ public interface RandomFire extends Populator {
      * 
      * @param count The new number to spawn
      */
-    void setFirePerChunk(int count);
+    void setFirePerChunk(VariableAmount count);
 
     /**
-     * Gets the block type targeted by this populator, fires will only be
-     * started when on top of this block type.
+     * Gets the {@link Predicate} that this populator used to determine of a
+     * given {@link BlockType} is valid to attempt to place a block of fire on
+     * top of.
      * 
-     * @return The targeted block
+     * @return The targeted block predicate
      */
-    BlockType getPlacementTarget();
+    Predicate<BlockType> getPlacementTarget();
 
     /**
-     * Sets the block type targeted by this populator, fires will only be
-     * started when on top of this block type.
+     * Sets the {@link Predicate} that this populator used to determine of a
+     * given {@link BlockType} is valid to attempt to place a block of fire on
+     * top of.
      * 
-     * @param target The new targeted block
+     * @param target The new targeted block predicate
      */
-    void setPlacementTarget(BlockType target);
+    void getPlacementTarget(Predicate<BlockType> target);
 
     /**
      * A builder for constructing {@link RandomFire} populators.
@@ -80,13 +84,14 @@ public interface RandomFire extends Populator {
         Builder perChunk(int count);
 
         /**
-         * Sets the block type targeted by this populator, fires will only be
-         * started when on top of this block type.
+         * Sets the {@link Predicate} that this populator used to determine of a
+         * given {@link BlockType} is valid to attempt to place a block of fire
+         * on top of.
          * 
-         * @param target The new targeted block
+         * @param target The new targeted block predicate
          * @return This builder, for chaining
          */
-        Builder placementTarget(BlockType target);
+        Builder placementTarget(Predicate<BlockType> target);
 
         /**
          * Resets this builder to the default values.
@@ -101,7 +106,7 @@ public interface RandomFire extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         RandomFire build() throws IllegalStateException;
 

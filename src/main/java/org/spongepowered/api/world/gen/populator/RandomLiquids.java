@@ -24,6 +24,8 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import org.spongepowered.api.util.VariableAmount;
+
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.world.gen.Populator;
 
@@ -49,11 +51,11 @@ public interface RandomLiquids extends Populator {
 
     /**
      * Gets the number of liquid sources to attempt to spawn per chunk, must be
-     * greater than zero. The default is 20 for lava and 50 for water.
+     * greater than zero.
      * 
      * @return The number of attempts to make
      */
-    int getAttemptsPerChunk();
+    VariableAmount getAttemptsPerChunk();
 
     /**
      * Sets the number of liquid sources to attempt to spawn per chunk, must be
@@ -61,7 +63,7 @@ public interface RandomLiquids extends Populator {
      * 
      * @param attempts The new number of attempts to make
      */
-    void setAttemptsPerChunk(int attempts);
+    void setAttemptsPerChunk(VariableAmount attempts);
 
     /**
      * A builder for constructing {@link RandomLiquids} populators.
@@ -83,7 +85,7 @@ public interface RandomLiquids extends Populator {
          * @param attempts The new number of attempts to make
          * @return This builder, for chaining
          */
-        Builder perChunk(int attempts);
+        Builder perChunk(VariableAmount attempts);
 
         /**
          * Resets this builder to the default values.
@@ -98,7 +100,7 @@ public interface RandomLiquids extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         RandomLiquids build() throws IllegalStateException;
 

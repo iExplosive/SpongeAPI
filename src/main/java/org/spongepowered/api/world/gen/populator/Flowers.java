@@ -24,13 +24,16 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.data.type.PlantType;
+import org.spongepowered.api.util.VariableAmount;
+import org.spongepowered.api.util.weighted.WeightedCollection;
+import org.spongepowered.api.util.weighted.WeightedObject;
 import org.spongepowered.api.world.gen.Populator;
 
+import java.util.Collection;
+
 /**
- * Represents a populator which uses perlin noise to scatter flowers randomly
- * around a chunk.
+ * Represents a populator which scatters flowers randomly around a chunk.
  */
 public interface Flowers extends Populator {
 
@@ -40,7 +43,7 @@ public interface Flowers extends Populator {
      * 
      * @return The number to spawn
      */
-    int getFlowersPerChunk();
+    VariableAmount getFlowersPerChunk();
 
     /**
      * Sets the number of flowers to attempt to spawn per chunk, must be greater
@@ -48,40 +51,15 @@ public interface Flowers extends Populator {
      * 
      * @param count The new amount to spawn
      */
-    void setFlowersPerChunk(int count);
+    void setFlowersPerChunk(VariableAmount count);
 
     /**
-     * Gets whether this populator will ignore the set plant type and default to
-     * the biome's flower type.
+     * Gets a mutable weighted collection of plant type for this populator to
+     * spawn.
      * 
-     * @return Is biome dependent
+     * @return The plant types
      */
-    boolean isBiomeDependent();
-
-    /**
-     * Sets whether this populator will ignore the set tile and default to the
-     * biome's flower type.
-     * 
-     * @param state The new biome dependency state
-     */
-    void setBiomeDependent(boolean state);
-
-    /**
-     * Gets the plant type for this populator to spawn. If the populator is
-     * flagged as being biome dependent ( {@link #isBiomeDependent()} ) then
-     * this will return absent.
-     * 
-     * @return The plant type, or absent if this is biome dependent
-     */
-    Optional<PlantType> getFlowerType();
-
-    /**
-     * Sets the plant type for this populator to spawn. This will automatically
-     * set the {@link #isBiomeDependent()} flag to false.
-     * 
-     * @param type The plant type to spawn
-     */
-    void serFlowerType(PlantType type);
+    WeightedCollection<WeightedObject<PlantType>> getFlowerTypes();
 
     /**
      * A builder for constructing {@link Flowers} populators.
@@ -95,25 +73,23 @@ public interface Flowers extends Populator {
          * @param count The new amount to spawn
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
+        Builder perChunk(VariableAmount count);
 
         /**
-         * Sets whether this populator will ignore the set tile and default to
-         * the biome's flower type.
+         * Sets the plant types for this populator to spawn.
          * 
-         * @param state The new biome dependent state
+         * @param types The plant types to spawn
          * @return This builder, for chaining
          */
-        Builder biomeDependant(boolean state);
+        Builder types(WeightedObject<PlantType>... types);
 
         /**
-         * Sets the plant type for this populator to spawn. This will
-         * automatically set the {@link #isBiomeDependent()} flag to false.
+         * Sets the plant types for this populator to spawn.
          * 
-         * @param type The plant type to spawn
+         * @param types The plant types to spawn
          * @return This builder, for chaining
          */
-        Builder type(PlantType type);
+        Builder types(Collection<WeightedObject<PlantType>> types);
 
         /**
          * Resets this builder to the default values.
@@ -128,7 +104,7 @@ public interface Flowers extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         Flowers build() throws IllegalStateException;
 

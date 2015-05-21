@@ -24,6 +24,8 @@
  */
 package org.spongepowered.api.world.gen;
 
+import com.google.common.base.Optional;
+import org.spongepowered.api.world.biome.BiomeGenerationSettings;
 import org.spongepowered.api.world.biome.BiomeType;
 
 import java.util.List;
@@ -66,7 +68,7 @@ public interface WorldGenerator {
     /**
      * Gets the main {@link GeneratorPopulator}. This generator populator is
      * responsible for generating the base terrain of the chunk.
-     *
+     * 
      * @return The {@link GeneratorPopulator}.
      * @see #setBaseGeneratorPopulator(GeneratorPopulator)
      */
@@ -75,7 +77,7 @@ public interface WorldGenerator {
     /**
      * Sets the {@link GeneratorPopulator}. This generator populator is
      * responsible for generating the base terrain of the chunk.
-     *
+     * 
      * @param generator The generator.
      */
     void setBaseGeneratorPopulator(GeneratorPopulator generator);
@@ -87,10 +89,10 @@ public interface WorldGenerator {
      * {@link BiomeType#getGeneratorPopulators() biome generator populators}
      * have been called. These generator populators are typically used to
      * generate large terrain features, like caves and ravines.
-     *
+     * 
      * <p>This list does not include {@link #getBaseGeneratorPopulator() the
      * base generator}.</p>
-     *
+     * 
      * @return The generator populators
      */
     List<GeneratorPopulator> getGeneratorPopulators();
@@ -98,7 +100,7 @@ public interface WorldGenerator {
     /**
      * Gets a mutable list of {@link Populator}s which are applied globally (in
      * the whole world).
-     *
+     * 
      * @see BiomeType#getPopulators()
      * @return The populators
      */
@@ -106,16 +108,43 @@ public interface WorldGenerator {
 
     /**
      * Gets the {@link BiomeGenerator} for this world generator.
-     *
+     * 
      * @return The biome generator
      */
     BiomeGenerator getBiomeGenerator();
 
     /**
      * Sets the {@link BiomeGenerator} for this world generator.
-     *
+     * 
      * @param biomeGenerator The new biome generator
      */
     void setBiomeGenerator(BiomeGenerator biomeGenerator);
+
+    /**
+     * Gets this world generator's override for the given {@link BiomeType} if
+     * it exists.
+     * 
+     * @param type The biome type
+     * @return The overriding settings, if they exist
+     */
+    Optional<BiomeGenerationSettings> getBiomeOverride(BiomeType type);
+
+    /**
+     * Gets whether this world generator has an override specified for the given
+     * {@link BiomeType}.
+     * 
+     * @param type The biome type
+     * @return Is overridden
+     */
+    boolean isBiomeOverriden(BiomeType type);
+
+    /**
+     * Sets the given {@link BiomeType} to be overriden with the given
+     * {@link BiomeGenerationSettings}.
+     * 
+     * @param type The biome type to override
+     * @param settings The overriding settings
+     */
+    void setBiomeOverride(BiomeType type, BiomeGenerationSettings settings);
 
 }

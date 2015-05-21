@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.world.gen.Populator;
 
 /**
@@ -38,7 +39,7 @@ public interface Reeds extends Populator {
      * 
      * @return The amount to spawn
      */
-    int getReedsPerChunk();
+    VariableAmount getReedsPerChunk();
 
     /**
      * Sets the number of reeds to attempt to spawn per chunk, must be greater
@@ -46,7 +47,7 @@ public interface Reeds extends Populator {
      * 
      * @param count The new amount to spawn
      */
-    void setReedsPerChunk(int count);
+    void setReedsPerChunk(VariableAmount count);
 
     /**
      * A builder for constructing {@link Reeds} populators.
@@ -60,7 +61,7 @@ public interface Reeds extends Populator {
          * @param count The new amount to spawn
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
+        Builder perChunk(VariableAmount count);
 
         /**
          * Resets this builder to the default values.

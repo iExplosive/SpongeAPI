@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.world.gen.Populator;
 
 /**
@@ -38,14 +39,14 @@ public interface Cactus extends Populator {
      * 
      * @return The number of cacti to spawn
      */
-    int getCactiPerChunk();
+    VariableAmount getCactiPerChunk();
 
     /**
      * Sets the number of cacti to spawn per chunk, cannot be negative.
      * 
      * @param count The new number of cacti to spawn
      */
-    void setCactiPerChunk(int count);
+    void setCactiPerChunk(VariableAmount count);
 
     /**
      * A builder for constructing {@link Cactus} populators.
@@ -58,7 +59,7 @@ public interface Cactus extends Populator {
          * @param count The new number of cacti to spawn
          * @return This builder, for chaining
          */
-        Builder cactiPerChunk(int count);
+        Builder cactiPerChunk(VariableAmount count);
 
         /**
          * Resets this builder to the default values.
@@ -73,7 +74,7 @@ public interface Cactus extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         Cactus build() throws IllegalStateException;
 

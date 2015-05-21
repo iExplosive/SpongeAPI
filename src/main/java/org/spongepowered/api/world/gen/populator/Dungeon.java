@@ -25,6 +25,7 @@
 package org.spongepowered.api.world.gen.populator;
 
 import org.spongepowered.api.data.manipulator.MobSpawnerData;
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.util.weighted.WeightedCollection;
 import org.spongepowered.api.util.weighted.WeightedEntity;
 import org.spongepowered.api.util.weighted.WeightedItem;
@@ -44,7 +45,7 @@ public interface Dungeon extends Populator {
      * 
      * @return The number of attempts
      */
-    int getAttemptsPerChunk();
+    VariableAmount getAttemptsPerChunk();
 
     /**
      * Sets the number of attempts at randomly spawning a generator per chunk.
@@ -52,7 +53,7 @@ public interface Dungeon extends Populator {
      * 
      * @param attempts The new number of attempts
      */
-    void setAttemptsPerChunk(int attempts);
+    void setAttemptsPerChunk(VariableAmount attempts);
 
     /**
      * Gets the {@link MobSpawnerData} which represents the MobSpawner which
@@ -63,9 +64,9 @@ public interface Dungeon extends Populator {
     MobSpawnerData getSpawnerData();
 
     /**
-     * Gets a mutable List of possible contents of the chests. Items will be
-     * randomly selected from this list based on weight in order to calculate
-     * the contents of chests placed within the dungeon.
+     * Gets a mutable weighted collection of possible contents of the chests.
+     * Items will be randomly selected from this list based on weight in order
+     * to calculate the contents of chests placed within the dungeon.
      * 
      * @return The contents list
      */
@@ -76,14 +77,14 @@ public interface Dungeon extends Populator {
      * 
      * @return The number of items
      */
-    int itemCount();
+    VariableAmount getNumberOfItems();
 
     /**
      * Sets the number of items which will spawn per chest.
      * 
      * @param count The new item count
      */
-    void setItemCount(int count);
+    void setNumberOfItems(VariableAmount count);
 
     /**
      * A builder for constructing {@link Dungeon} populators.
@@ -97,7 +98,7 @@ public interface Dungeon extends Populator {
          * @param attempts The new number of attempts
          * @return This builder, for chaining
          */
-        Builder attempts(int attempts);
+        Builder attempts(VariableAmount attempts);
 
         /**
          * Sets the {@link MobSpawnerData} which represents the MobSpawner which
@@ -191,8 +192,8 @@ public interface Dungeon extends Populator {
         Builder possibleEntities(Collection<WeightedEntity> entities);
 
         /**
-         * Defines a number of {@link WeightedItem}s from which items
-         * will be randomly selected based on weight in order to calculate the
+         * Defines a number of {@link WeightedItem}s from which items will
+         * be randomly selected based on weight in order to calculate the
          * contents of chests placed within the dungeon.
          *
          * @param items The possible items
@@ -201,8 +202,8 @@ public interface Dungeon extends Populator {
         Builder possibleItems(WeightedItem... items);
 
         /**
-         * Defines a number of {@link WeightedItem}s from which items
-         * will be randomly selected based on weight in order to calculate the
+         * Defines a number of {@link WeightedItem}s from which items will
+         * be randomly selected based on weight in order to calculate the
          * contents of chests placed within the dungeon.
          *
          * @param items The possible items
@@ -216,7 +217,7 @@ public interface Dungeon extends Populator {
          * @param count The new item count
          * @return This builder, for chaining
          */
-        Builder itemsQuantity(int count);
+        Builder itemsQuantity(VariableAmount count);
 
         /**
          * Resets this builder to the default values.
@@ -231,7 +232,7 @@ public interface Dungeon extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         Dungeon build() throws IllegalStateException;
 

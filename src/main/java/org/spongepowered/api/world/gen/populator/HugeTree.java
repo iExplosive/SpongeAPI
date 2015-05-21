@@ -24,8 +24,13 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import org.spongepowered.api.util.VariableAmount;
+import org.spongepowered.api.util.weighted.WeightedCollection;
+import org.spongepowered.api.util.weighted.WeightedObject;
 import org.spongepowered.api.world.gen.Populator;
 import org.spongepowered.api.world.gen.type.BiomeTreeType;
+
+import java.util.Collection;
 
 /**
  * Represents a populator which spawns the huge tree variants of the standard
@@ -39,7 +44,7 @@ public interface HugeTree extends Populator {
      * 
      * @return The number to spawn
      */
-    int getTreesPerChunk();
+    VariableAmount getTreesPerChunk();
 
     /**
      * Sets the number of trees to attempt to spawn per chunk, must be greater
@@ -47,22 +52,14 @@ public interface HugeTree extends Populator {
      * 
      * @param count The new amount to spawn
      */
-    void setTreesPerChunk(int count);
+    void setTreesPerChunk(VariableAmount count);
 
     /**
-     * Gets the type of huge tree to spawn.
+     * Gets a weighted collection of huge tree types to spawn.
      * 
-     * @return The tree type
+     * @return The tree types
      */
-    BiomeTreeType getType();
-
-    /**
-     * Sets the type of huge tree to spawn. If the given type does not have a
-     * valid huge tree equivalent then this method will have no effect.
-     * 
-     * @param type The new tree type
-     */
-    void setType(BiomeTreeType type);
+    WeightedCollection<WeightedObject<BiomeTreeType>> getType();
 
     /**
      * A builder for constructing {@link HugeTree} populators.
@@ -76,16 +73,27 @@ public interface HugeTree extends Populator {
          * @param count The new amount to spawn
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
+        Builder perChunk(VariableAmount count);
 
         /**
-         * Sets the type of huge tree to spawn. If the given type does not have
-         * a valid huge tree equivalent then this method will have no effect.
+         * Sets the weighted types of huge trees to spawn. Any of the given
+         * weighted types which do not have big tree equivalents will be
+         * ignored.
          * 
-         * @param type The new tree type
+         * @param types The new tree types
          * @return This builder, for chaining
          */
-        Builder type(BiomeTreeType type);
+        Builder type(WeightedObject<BiomeTreeType>... types);
+
+        /**
+         * Sets the weighted types of huge trees to spawn. Any of the given
+         * weighted types which do not have big tree equivalents will be
+         * ignored.
+         * 
+         * @param types The new tree types
+         * @return This builder, for chaining
+         */
+        Builder type(Collection<WeightedObject<BiomeTreeType>> types);
 
         /**
          * Resets this builder to the default values.
@@ -100,7 +108,7 @@ public interface HugeTree extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         HugeTree build() throws IllegalStateException;
 

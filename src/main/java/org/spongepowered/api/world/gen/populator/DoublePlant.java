@@ -24,8 +24,10 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
-import com.google.common.collect.ImmutableSet;
 import org.spongepowered.api.data.type.DoubleSizePlantType;
+import org.spongepowered.api.util.VariableAmount;
+import org.spongepowered.api.util.weighted.WeightedCollection;
+import org.spongepowered.api.util.weighted.WeightedObject;
 import org.spongepowered.api.world.gen.Populator;
 
 import java.util.Collection;
@@ -38,54 +40,26 @@ import java.util.Collection;
 public interface DoublePlant extends Populator {
 
     /**
-     * Gets an immutable set of possible plants which may be selected to be
-     * spawned in by this populator.
+     * Gets a mutable weighted collection of possible plants which may be
+     * selected to be spawned in by this populator.
      * 
      * @return The possible types to be spawned
      */
-    ImmutableSet<DoubleSizePlantType> getPossibleTypes();
+    WeightedCollection<WeightedObject<DoubleSizePlantType>> getPossibleTypes();
 
     /**
-     * Sets which plant types may be spawned in by this populator.
+     * Gets the number of plants to create per chunk.
      * 
-     * @param types A collection of possible types
+     * @return The amount
      */
-    void setPossibleTypes(Collection<DoubleSizePlantType> types);
+    VariableAmount getPlantsPerChunk();
 
     /**
-     * Sets which plant types may be spawned in by this populator.
+     * Gets the number of plants to create per chunk, cannot be negative.
      * 
-     * @param types Possible types
+     * @param count The new amount
      */
-    void setPossibleTypes(DoubleSizePlantType... types);
-
-    /**
-     * Gets the base number of plants to create.
-     * 
-     * @return The base amount
-     */
-    int getBaseAmount();
-
-    /**
-     * Sets the base number of plants to create, cannot be negative.
-     * 
-     * @param count The new base amount
-     */
-    void setBaseAmount(int count);
-
-    /**
-     * Gets the variance in the amount.
-     * 
-     * @return The amount variance
-     */
-    int getAmountVariance();
-
-    /**
-     * Sets the variance in the amount, must be greater than zero.
-     * 
-     * @param variance The new amount variance
-     */
-    void setAmountVariance(int variance);
+    void setPlantsPerChunk(VariableAmount count);
 
     /**
      * A builder for constructing {@link DoublePlant} populators.
@@ -98,31 +72,23 @@ public interface DoublePlant extends Populator {
          * @param types Possible types
          * @return This builder, for chaining
          */
-        Builder possibleTypes(DoubleSizePlantType... types);
+        Builder types(WeightedObject<DoubleSizePlantType>... types);
 
         /**
          * Sets which plant types may be spawned in by this populator.
          * 
-         * @param types A collection of possible types
+         * @param types Possible types
          * @return This builder, for chaining
          */
-        Builder possibleTypes(Collection<DoubleSizePlantType> types);
+        Builder types(Collection<WeightedObject<DoubleSizePlantType>> types);
 
         /**
-         * Sets the base number of plants to create, cannot be negative.
+         * Sets the number of plants to create, cannot be negative.
          * 
          * @param count The new base amount
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
-
-        /**
-         * Sets the variance in the amount, must be greater than zero.
-         * 
-         * @param variance The new amount variance
-         * @return This builder, for chaining
-         */
-        Builder perChunkVariance(int variance);
+        Builder perChunk(VariableAmount count);
 
         /**
          * Resets this builder to the default values.
@@ -137,7 +103,7 @@ public interface DoublePlant extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         DoublePlant build() throws IllegalStateException;
 

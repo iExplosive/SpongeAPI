@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.world.gen.Populator;
 
 /**
@@ -33,19 +34,19 @@ public interface Melons extends Populator {
 
     /**
      * Gets the number of melons to attempt to spawn per chunk, must be greater
-     * than zero. The default value is 64.
+     * than zero.
      * 
      * @return The number to spawn
      */
-    int getMelonsPerChunk();
+    VariableAmount getMelonsPerChunk();
 
     /**
      * Sets the number of melons to attempt to spawn per chunk, must be greater
-     * than zero.
+     * than zero. The default value is 64.
      * 
      * @param count The new amount to spawn
      */
-    void setMelonsPerChunk(int count);
+    void setMelonsPerChunk(VariableAmount count);
 
     /**
      * A builder for constructing {@link Melons} populators.
@@ -59,7 +60,7 @@ public interface Melons extends Populator {
          * @param count The new amount to spawn
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
+        Builder perChunk(VariableAmount count);
 
         /**
          * Resets this builder to the default values.
@@ -74,7 +75,7 @@ public interface Melons extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         Melons build() throws IllegalStateException;
 

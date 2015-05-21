@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.world.gen.populator;
 
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.world.gen.Populator;
 
 /**
@@ -36,80 +37,43 @@ public interface IceSpike extends Populator {
      * 
      * @return The base height
      */
-    int getBaseHeight();
+    VariableAmount getHeight();
 
     /**
      * Sets the base height of the spike.
      * 
      * @param height The new base height
      */
-    void setBaseHeight(int height);
+    void setHeight(VariableAmount height);
 
     /**
-     * Gets the height variance of the spike. The final height will be the base
-     * height plus a random amount between zero (inclusive) and the variance
-     * (exclusive).
+     * Gets the probability of the spike much larger than normal.
      * 
-     * @return The height variance
+     * @return The spawn probability
      */
-    int getHeightVariance();
+    double getExtremeSpikeProbability();
 
     /**
-     * Sets the height variance of the spike. The final height will be the base
-     * height plus a random amount between zero (inclusive) and the variance
-     * (exclusive).
+     * Gets the probability of the spike much larger than normal. The default
+     * value is 0.01667 (therefore equating to a 1 in 60 chance).
      * 
-     * @param variance The new height variance
+     * @param p The new spawn probability
      */
-    void setHeightVariance(int variance);
+    void setExtremeSpikeProbability(double p);
 
     /**
-     * Gets the chance of the spike much larger than normal. The default value
-     * is 60 (therefore equating to a 1 in 60 chance).
+     * Gets the height increase of the extreme spikes.
      * 
-     * @return The spawn chance
+     * @return The height increase
      */
-    int getExtremeSpikeChance();
+    VariableAmount getExtremeSpikeIncrease();
 
     /**
-     * Gets the chance of the spike much larger than normal. The default value
-     * is 60 (therefore equating to a 1 in 60 chance).
+     * Sets the height increase of the extreme spikes.
      * 
-     * @param chance The new spawn chance
+     * @param increase The new height increase
      */
-    void setExtremeSpikeChance(int chance);
-
-    /**
-     * Gets the base height increase of the extreme spikes.
-     * 
-     * @return The base height increase
-     */
-    int getExtremeSpikeBaseIncrease();
-
-    /**
-     * Sets the base height increase of the extreme spikes.
-     * 
-     * @param increase The new base height increase
-     */
-    void setExtremeSpikeBaseIncrease(int increase);
-
-    /**
-     * Gets the variance in the height increase of extreme spikes. The final
-     * increase will be the base increase plus a random amount between zero
-     * (inclusive) and the variance (exclusive).
-     * 
-     * @return The increase variance
-     */
-    int getExtremeSpikeIncreaseVariance();
-
-    /**
-     * Sets the variance in the height increase of extreme spikes. The final
-     * increase will be the base increase plus a random amount between zero
-     * (inclusive) and the variance (exclusive).
-     * 
-     * @param variance The new increase variance
-     */
-    void setExtremeSpikeIncreaseVariance(int variance);
+    void setExtremeSpikeIncrease(VariableAmount increase);
 
     /**
      * A builder for constructing {@link IceSpike} populators.
@@ -122,26 +86,16 @@ public interface IceSpike extends Populator {
          * @param height The new base height
          * @return This builder, for chaining
          */
-        Builder height(int height);
+        Builder height(VariableAmount height);
 
         /**
-         * Sets the height variance of the spike. The final height will be the
-         * base height plus a random amount between zero (inclusive) and the
-         * variance (exclusive).
+         * Gets the probability of the spike much larger than normal. The
+         * default value is 0.01667 (therefore equating to a 1 in 60 chance).
          * 
-         * @param variance The new height variance
+         * @param p The new spawn probability
          * @return This builder, for chaining
          */
-        Builder heightVariance(int variance);
-
-        /**
-         * Gets the chance of the spike much larger than normal. The default
-         * value is 60 (therefore equating to a 1 in 60 chance).
-         * 
-         * @param chance The new spawn chance
-         * @return This builder, for chaining
-         */
-        Builder extremeSpikeChance(int chance);
+        Builder extremeSpikeProbability(double p);
 
         /**
          * Sets the base height increase of the extreme spikes.
@@ -149,17 +103,7 @@ public interface IceSpike extends Populator {
          * @param increase The new base height increase
          * @return This builder, for chaining
          */
-        Builder extremeSpikeBaseIncrease(int increase);
-
-        /**
-         * Sets the variance in the height increase of extreme spikes. The final
-         * increase will be the base increase plus a random amount between zero
-         * (inclusive) and the variance (exclusive).
-         * 
-         * @param variance The new increase variance
-         * @return This builder, for chaining
-         */
-        Builder extremeSpikeIncreaseVariance(int variance);
+        Builder extremeSpikeIncrease(VariableAmount increase);
 
         /**
          * Resets this builder to the default values.
@@ -174,7 +118,7 @@ public interface IceSpike extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         IceSpike build() throws IllegalStateException;
 

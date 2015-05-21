@@ -101,7 +101,7 @@ public class WeightedItem extends WeightedObject<ItemType> {
      * @param maxStacks The maximum number of item stacks that may be created
      * @return The item stacks
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     public Collection<ItemStack> getRandomItem(ItemStackBuilder builder, Random rand, int maxStacks) {
         int total = this.quantity.getFlooredAmount(rand);
         if (total <= 0) {
@@ -140,7 +140,7 @@ public class WeightedItem extends WeightedObject<ItemType> {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof WeightedItem)) {
             return false;
         }
         WeightedItem object = (WeightedItem) obj;
@@ -154,6 +154,16 @@ public class WeightedItem extends WeightedObject<ItemType> {
             return false;
         }
         return this.weight == object.weight;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 37 * result + this.additionalProperties.hashCode();
+        result = 37 * result + this.object.hashCode();
+        result = 37 * result + this.weight;
+        result = 37 * result + this.quantity.hashCode();
+        return result;
     }
 
 }

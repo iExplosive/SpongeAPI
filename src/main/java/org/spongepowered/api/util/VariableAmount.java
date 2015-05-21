@@ -24,6 +24,8 @@
  */
 package org.spongepowered.api.util;
 
+import com.google.common.base.Objects;
+
 import java.util.Random;
 
 /**
@@ -123,11 +125,6 @@ public abstract class VariableAmount {
         return (int) Math.floor(getAmount(rand));
     }
 
-    @Override
-    public String toString() {
-        return "a varying amount";
-    }
-
     /**
      * Represents a fixed amount, calls to {@link #getAmount} will always return
      * the same fixed value.
@@ -146,15 +143,27 @@ public abstract class VariableAmount {
         }
 
         @Override
+        public String toString() {
+            return Objects.toStringHelper(this).add("amount", this.amount).toString();
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (!(obj instanceof Fixed)) {
                 return false;
             }
             Fixed amount = (Fixed) obj;
             return amount.amount == this.amount;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            result = 37 * result + (int) (Double.doubleToLongBits(this.amount) ^ (Double.doubleToLongBits(this.amount) >> 32));
+            return result;
         }
 
     }
@@ -180,15 +189,28 @@ public abstract class VariableAmount {
         }
 
         @Override
+        public String toString() {
+            return Objects.toStringHelper(this).add("base", this.base).add("variance", this.variance).toString();
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (!(obj instanceof BaseAndVariance)) {
                 return false;
             }
             BaseAndVariance amount = (BaseAndVariance) obj;
             return amount.base == this.base && amount.variance == this.variance;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            result = 37 * result + (int) (Double.doubleToLongBits(this.base) ^ (Double.doubleToLongBits(this.base) >> 32));
+            result = 37 * result + (int) (Double.doubleToLongBits(this.variance) ^ (Double.doubleToLongBits(this.variance) >> 32));
+            return result;
         }
 
     }
@@ -226,11 +248,16 @@ public abstract class VariableAmount {
         }
 
         @Override
+        public String toString() {
+            return Objects.toStringHelper(this).add("base", this.base).add("chance", this.chance).add("inner", this.inner).toString();
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (!(obj instanceof OptionalAmount)) {
                 return false;
             }
             OptionalAmount amount = (OptionalAmount) obj;
@@ -238,6 +265,15 @@ public abstract class VariableAmount {
                 return false;
             }
             return amount.base == this.base && this.chance == amount.chance;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            result = 37 * result + (int) (Double.doubleToLongBits(this.base) ^ (Double.doubleToLongBits(this.base) >> 32));
+            result = 37 * result + (int) (Double.doubleToLongBits(this.chance) ^ (Double.doubleToLongBits(this.chance) >> 32));
+            result = 37 * result + this.inner.hashCode();
+            return result;
         }
 
     }

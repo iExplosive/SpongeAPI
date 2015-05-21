@@ -25,7 +25,6 @@
 package org.spongepowered.api.util.weighted;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -161,6 +160,25 @@ public class WeightedCollection<T extends WeightedObject<?>> implements Collecti
     @Override
     public <E> E[] toArray(E[] array) {
         return this.objects.toArray(array);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof WeightedCollection)) {
+            return false;
+        }
+        WeightedCollection<?> wc = (WeightedCollection<?>) obj;
+        return this.objects.equals(wc.objects);
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 37 * result + this.objects.hashCode();
+        return result;
     }
 
     /**

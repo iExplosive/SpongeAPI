@@ -25,6 +25,7 @@
 package org.spongepowered.api.world.gen.populator;
 
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.util.VariableAmount;
 import org.spongepowered.api.world.gen.Populator;
 
 /**
@@ -53,7 +54,7 @@ public interface Ore extends Populator {
      * 
      * @return The deposit size
      */
-    int getDepositSize();
+    VariableAmount getDepositSize();
 
     /**
      * Sets the size of deposit of ore. This is the number of blocks per clump
@@ -61,7 +62,7 @@ public interface Ore extends Populator {
      * 
      * @param size The new deposit size
      */
-    void setDepositSize(int size);
+    void setDepositSize(VariableAmount size);
 
     /**
      * Gets the number of ore clumps to attempt to spawn per chunk, must be
@@ -69,7 +70,7 @@ public interface Ore extends Populator {
      * 
      * @return The number of clumps to spawn
      */
-    int getDepositsPerChunk();
+    VariableAmount getDepositsPerChunk();
 
     /**
      * Sets the number of ore clumps to attempt to spawn per chunk, must be
@@ -77,35 +78,35 @@ public interface Ore extends Populator {
      * 
      * @param count The new number of clumps to spawn
      */
-    void setDepositsPerChunk(int count);
+    void setDepositsPerChunk(VariableAmount count);
 
     /**
      * Gets the minimum height that the ore can generate at.
      * 
      * @return The minimum height
      */
-    int getMinHeight();
+    VariableAmount getMinHeight();
 
     /**
      * Sets the minimum height that the ore can generate at.
      * 
      * @param min The new minimum height
      */
-    void setMinHeight(int min);
+    void setMinHeight(VariableAmount min);
 
     /**
      * Gets the maximum height that the ore can generate at.
      * 
      * @return The maximum height
      */
-    int getMaxHeight();
+    VariableAmount getMaxHeight();
 
     /**
      * Sets the maximum height that the ore can generate at.
      * 
      * @param max The new maximum height
      */
-    void setMaxHeight(int max);
+    void setMaxHeight(VariableAmount max);
 
     /**
      * A builder for constructing {@link Ore} populators.
@@ -127,7 +128,7 @@ public interface Ore extends Populator {
          * @param size The new deposit size
          * @return This builder, for chaining
          */
-        Builder size(int size);
+        Builder size(VariableAmount size);
 
         /**
          * Sets the number of ore clumps to attempt to spawn per chunk, must be
@@ -136,7 +137,7 @@ public interface Ore extends Populator {
          * @param count The new number of clumps to spawn
          * @return This builder, for chaining
          */
-        Builder perChunk(int count);
+        Builder perChunk(VariableAmount count);
 
         /**
          * Sets the minimum height that the ore can generate at.
@@ -144,7 +145,7 @@ public interface Ore extends Populator {
          * @param min The new minimum height
          * @return This builder, for chaining
          */
-        Builder minHeight(int min);
+        Builder minHeight(VariableAmount min);
 
         /**
          * Sets the maximum height that the ore can generate at.
@@ -152,7 +153,7 @@ public interface Ore extends Populator {
          * @param max The new maximum height
          * @return This builder, for chaining
          */
-        Builder maxHeight(int max);
+        Builder maxHeight(VariableAmount max);
 
         /**
          * Resets this builder to the default values.
@@ -167,7 +168,7 @@ public interface Ore extends Populator {
          * 
          * @return A new instance of the populator
          * @throws IllegalStateException If there are any settings left unset
-         *             which do not have default values
+         *         which do not have default values
          */
         Ore build() throws IllegalStateException;
 

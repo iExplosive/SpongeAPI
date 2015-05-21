@@ -22,38 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.world.gen.populator;
+package org.spongepowered.api.world.gen.type;
 
-import org.spongepowered.api.world.gen.Populator;
+import org.spongepowered.api.CatalogType;
+import org.spongepowered.api.util.annotation.CatalogedBy;
 
 /**
- * Represents a populator which creates the ground cover of bushes as found in
- * jungle biomes.
+ * Represents the various types of mushrooms which may be spawned into the world.
  */
-public interface JungleBush extends Populator {
-
-    /**
-     * A builder for constructing {@link JungleBush} populators.
-     */
-    interface Builder {
-
-        /**
-         * Resets this builder to the default values.
-         * 
-         * @return This builder, for chaining
-         */
-        Builder reset();
-
-        /**
-         * Builds a new instance of a {@link JungleBush} populator with the
-         * settings set within the builder.
-         * 
-         * @return A new instance of the populator
-         * @throws IllegalStateException If there are any settings left unset
-         *         which do not have default values
-         */
-        JungleBush build() throws IllegalStateException;
-
-    }
+@CatalogedBy(MushroomTypes.class)
+public interface MushroomType extends CatalogType {
 
 }
